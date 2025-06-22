@@ -1,0 +1,105 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="row mx-1">
+        <h2>Movie Name : {{ listing.item }}</h2>
+    </div>
+    <img src="{{ listing.image_url }}" alt="{{ listing.item }}" class="img-thumbnail" width="300px">
+    <p>{{ listing.description }}</p>
+    <br/>
+    {% if user.is_authenticated %}
+    <form action="{% url 'toggle_watchlist' id=listing.id %}" method="post">
+        {% csrf_token %}
+        {% if user_watchlisted %}
+            <button type="submit" class="btn btn-danger">
+                Remove from Watchlist
+            </button>
+        {% else %}
+            <button type="submit" class="btn btn-primary">
+                Add to Watchlist
+            </button>
+        {% endif %}
+    </form>
+    <br/>
+    {% endif %}
+
+    {% if listing.active_status == False %}
+    <h3>Sold to : {{ listing.winner }} for {{ highestbid }}</h3>
+    <br/>
+    {% elif listing.active_status == True %}
+    <h3>Current Price : ${{ listing.price }}</h3>
+    <br/>
+    {% endif %}
+
+    {% if user == listing.lister %}
+    {% if listing.active_status %}
+        <form action="{% url 'close_auction' id=listing.id%}" method="post">
+            {% csrf_token %}
+            {% if closable %}
+            <button type="submit" class="btn btn-danger">
+                Close Auction
+            </button>
+            {% else %}
+            <button type="submit" class="btn btn-danger" disabled>
+                Close Auction
+            </button>
+            <div>
+                <small>There must be at least one bidding to close the auction.</small>
+            </div>
+            {% endif %}
+        </form>
+        <br/>
+        <br/>
+    {% endif %}
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    {% if listing.active_status %}
+        <form action="{% url 'listing' id=listing.id %}" method="post">
+            {% csrf_token %}
+
+            <input type="hidden" name="listing-id" value="{{ listing.id }}">
+            <div class="form-group">
+                <small> {{ num_bids }} bids so far.</small>
+                <input type="number" class="form-control" name="bid" placeholder="Bid">
+                {% if messages %}
+                    {% for message in messages %}
+                        <small> {{ message }} </small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <input type="submit" name="submit">
+        </form>
+        <br/>
+        <br/>
+    {% endif %}
+    {% endif %}
+
+    <h4>Details : </h4>
+    <p>Genre : {{ listing.genre }}</p>
+    <p>Language : {{ listing.language }}</p>
+    <p>Listed by : {{ listing.lister }}</p>
+    <p>Listed on : {{ listing.date_time }}</p>
+    <br/>
+
+    <h4>Comments : </h4>
+    {% if user.is_authenticated %}
+        <form action="{% url 'add_comment' id=listing.id %}" method="post">
+            {% csrf_token %}
+
+            <input type="hidden" name="listing-id" value="{{ listing.id }}">
+            <div class="form-group">
+                <input type="text" class="form-control" name="comment" placeholder="Add a Comment">
+            </div>
+            <input type="submit" name="submit">
+        </form>
+    {% endif %}
+    <br/>
+
+    {% for comment in comments %}
+        <h6><b>{{ comment.commenter }}</b></h6>
+        <p>{{ comment.comment }}</p>
+        <hr>
+    {% endfor %}
+
+{% endblock %}

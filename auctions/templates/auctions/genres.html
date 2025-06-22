@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Genres</h2>
+
+    {% for genre in genres %}
+        <p>
+            <a href="{% url 'genre_results' genre=genre %}">{{ genre.category }}</a>
+        </p>
+    {% endfor %}
+{% endblock %}

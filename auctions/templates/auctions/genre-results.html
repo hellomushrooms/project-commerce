@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ genre }}</h2>
+
+    <br/>
+    <div class="row mx-3">
+        {% for result in results %}
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{{ result.image_url }}" alt="{{ result.item }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ result.item }}</h5>
+                    <p class="card-text">{{ result.description }}</p>
+                    <h5 class="card-title">${{ result.price }}</h5>
+                    <a href="{% url 'listing' id=result.id %}" class="btn btn-primary">View Listing</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+{% endblock %}
