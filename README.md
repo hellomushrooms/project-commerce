@@ -2,6 +2,8 @@
 
 An online auction platform built using Django, inspired by eBay. This project was developed as part of Harvard's CS50W Web Programming course.
 
+Here's a video of this project in action: https://www.youtube.com/watch?v=gM8YsgOY6qI
+
 ## ✨ Features
 
 - User registration and login
